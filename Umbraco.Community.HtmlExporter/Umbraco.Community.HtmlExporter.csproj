@@ -14,9 +14,9 @@
         <Copyright>Hüseyin Sekmenoğlu @ 2025</Copyright>
         <PackageProjectUrl>https://marketplace.umbraco.com/package/umbraco.community.htmlexporter</PackageProjectUrl>
         <RepositoryUrl>https://github.com/sekmenhuseyin/Sekmen.StaticSiteGenerator</RepositoryUrl>
-        <Version>1.1.0</Version>
-        <AssemblyVersion>1.1.0</AssemblyVersion>
-        <FileVersion>1.1.0</FileVersion>
+        <Version>1.2.0</Version>
+        <AssemblyVersion>1.2.0</AssemblyVersion>
+        <FileVersion>1.2.0</FileVersion>
         <PackageReadmeFile>readme.md</PackageReadmeFile>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageIcon>logo.png</PackageIcon>
