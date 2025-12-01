@@ -5,7 +5,7 @@
 @using ContentModels = Umbraco.Cms.Web.Common.PublishedModels
 
 @{
-    AuthorList authorList = UmbracoContext.Content.GetAtRoot().DescendantsOrSelf<AuthorList>().FirstOrDefault();
+    AuthorList authorList = UmbracoContext.Content.GetById(new Guid("8b97891b-bb88-4c50-827d-a458c3c2b7bb")).DescendantsOrSelf<AuthorList>().FirstOrDefault();
     int modelId = Model.Id;
     var isAuthorListPage = modelId == authorList?.Id;
     var fallbackPageSize = isAuthorListPage ? 10 : 3;
