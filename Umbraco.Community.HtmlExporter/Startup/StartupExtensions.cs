@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-
-namespace Umbraco.Community.HtmlExporter.Startup;
+﻿namespace Umbraco.Community.HtmlExporter.Startup;
 
 public static class StartupExtensions
 {

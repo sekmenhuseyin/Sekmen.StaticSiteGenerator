@@ -1,20 +1,20 @@
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Clean" Version="6.0.1" />
-    <PackageVersion Include="HtmlAgilityPack" Version="[1.12.1,)" />
+    <PackageVersion Include="Clean" Version="7.0.1" />
+    <PackageVersion Include="HtmlAgilityPack" Version="[1.12.4,)" />
     <PackageVersion Include="Sekmen.StaticSiteGenerator" Version="0.2.0" />
-    <PackageVersion Include="Umbraco.Cms" Version="16.2.0" />
-    <PackageVersion Include="Umbraco.Cms.Web.Website" Version="[16.0.0,)" />
-    <PackageVersion Include="Umbraco.Cms.Web.Common" Version="[16.0.0,)" />
-    <PackageVersion Include="Umbraco.Cms.Api.Common" Version="[16.0.0,)" />
-    <PackageVersion Include="Umbraco.Cms.Api.Management" Version="[16.0.0,)" />
+    <PackageVersion Include="Umbraco.Cms" Version="17.0.0" />
+    <PackageVersion Include="Umbraco.Cms.Web.Website" Version="[17.0.0,)" />
+    <PackageVersion Include="Umbraco.Cms.Web.Common" Version="[17.0.0,)" />
+    <PackageVersion Include="Umbraco.Cms.Api.Common" Version="[17.0.0,)" />
+    <PackageVersion Include="Umbraco.Cms.Api.Management" Version="[17.0.0,)" />
     <PackageVersion Include="Microsoft.ICU.ICU4C.Runtime" Value="72.1.0.3" />
   </ItemGroup>
 </Project>
