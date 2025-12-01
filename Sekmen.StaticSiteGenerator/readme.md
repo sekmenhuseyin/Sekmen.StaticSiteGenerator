@@ -21,6 +21,7 @@ It is also shipped together with an Umbraco backoffice plugin (NuGet: `Umbraco.C
 - Domain & path rewriting (replaces the original origin with a target/static domain you specify)
 - Additional manual URL injection (export pages not linked or not in sitemap)
 - Automatic `index.html` generation for folder style URLs
+- Custom ordered string replacements (filenames + HTML content) via `StringReplacements[]`
 - Basic normalization for Umbraco specific paths (`umbraco-cms` → `umbraco`)
 - MIT licensed & simple, dependency-light (only HtmlAgilityPack)
 
@@ -54,6 +55,12 @@ dotnet add package Umbraco.Community.HtmlExporter
 | `AdditionalUrls` | `string[]` | Extra absolute or relative URLs/paths to ensure export even if not linked/sitemap. |
 | `TargetUrl` | `string` | Replacement origin (e.g. `https://static.example.com/`). Used for rewriting references in saved HTML. Include trailing slash for consistency. |
 | `OutputFolder` | `string` | Local folder where the static site will be generated. Created if missing. |
+| `StringReplacements` | `StringReplacements[]` | Ordered list of additional string replacements applied to: (1) the computed output file path, then (2) the final HTML/content after built‑in rewrites. Each pair is simple `OldValue` → `NewValue` replacement (case sensitive). |
+
+Supporting record:
+```
+public record StringReplacements(string OldValue, string NewValue);
+```
 
 ### Method
 `await Functions.ExportWebsite(HttpClient client, ExportCommand command);`
@@ -67,12 +74,47 @@ var cmd = new ExportCommand(
     SiteUrl: "myumbracosite.com",          // no protocol
     AdditionalUrls: new[] { "/404", "/health" },
     TargetUrl: "https://static.myumbracosite.com/", // will replace absolute refs
-    OutputFolder: Path.Combine(Environment.CurrentDirectory, "export")
+    OutputFolder: Path.Combine(Environment.CurrentDirectory, "export"),
+    StringReplacements: new []
+    {
+        new StringReplacements("umbraco-cms", "umbraco"),
+        new StringReplacements("Umbraco CMS", "Umbraco")
+    }
 );
 
 await Functions.ExportWebsite(http, cmd);
 Console.WriteLine("Export complete.");
 ```
+
+---
+### Custom String Replacements
+Use `StringReplacements` to perform deterministic, ordered find/replace operations after the default rewrite logic. Typical use cases:
+- Normalizing CMS specific path or branding strings
+- Injecting a CDN hostname into residual inline references missed by primary rewrite
+- Renaming generated folder/file segments (e.g. remove `umbraco-cms` from paths)
+
+Rules & Behavior:
+- Applied to output path first (affects where file is written)
+- Then applied to full HTML/content string
+- Executed in the order supplied (later replacements see earlier changes)
+- Pure string operations (no regex)
+
+Example – add analytics snippet placeholder replacement:
+```csharp
+var cmd = new ExportCommand(
+    SiteUrl: "example.com",
+    AdditionalUrls: Array.Empty<string>(),
+    TargetUrl: "https://static.example.com/",
+    OutputFolder: "./out",
+    StringReplacements: new[]
+    {
+        new StringReplacements("{{ANALYTICS}}", "<script src=\"/analytics.js\"></script>"),
+        new StringReplacements("umbraco-cms", "umbraco")
+    }
+);
+```
+
+If you have no custom replacements, pass `Array.Empty<StringReplacements>()` or `new StringReplacements[0]`.
 
 ---
 ## Umbraco Plugin
@@ -91,17 +133,21 @@ curl -X POST \
   -F AdditionalUrls=/another-page \
   -F TargetUrl=https://static.mysite.local/ \
   -F OutputFolder=C:\\exports\\mysite \
+  -F StringReplacements[0].OldValue=umbraco-cms \
+  -F StringReplacements[0].NewValue=umbraco \
   https://mysite.local/umbracocommunityhtmlexporter/api/v1.0/export-website
 ```
 (You must be an authenticated backoffice user; obtain cookies via normal login.)
 
 ---
-## Rewriting Behavior Details
-The exporter currently applies simple string replacements:
-- `"/` → `"{TargetUrl}` and `'/'` → `'{TargetUrl}` (prefixing root-relative paths)
-- Original `https://{SiteUrl}/` fully replaced with `{TargetUrl}`
-- `umbraco-cms` → `umbraco` and `Umbraco CMS` → `Umbraco`
-Future enhancements may introduce a structured HTML DOM rewrite to avoid accidental matches inside scripts or data attributes.
+## Rewriting & Replacement Order Details
+1. Built‑in replacements:
+   - Prefix root‑relative `"/` and `'/` references with `TargetUrl`
+   - Replace full `sourceUrl` (`https://{SiteUrl}/`) with `TargetUrl`
+2. Apply each `StringReplacements` pair in sequence to the output path (directory/file name)
+3. Apply each pair again to the full HTML/content payload
+
+Implication: you can purposefully chain transformations (e.g. first collapse a verbose path segment, then swap a remaining token produced by the first step).
 
 ---
 ## Limitations / Known Gaps
@@ -169,6 +215,7 @@ You can wrap `Functions.ExportWebsite` to:
 | Broken relative links | Missing trailing slash in `TargetUrl` | Ensure `TargetUrl` ends with `/` |
 | Assets 404 on host | Rewritten to wrong domain | Verify `TargetUrl` correctness |
 | Slow export | Large asset count, sequential fetch | Future: add parallelism (or fork & add tasks) |
+| Replacement not applied | Order conflict or missing pair | Inspect `StringReplacements` order |
 
 ---
 ## Security Notes
@@ -193,8 +240,8 @@ await Functions.ExportWebsite(new HttpClient(), new ExportCommand(
     SiteUrl: "example.com",
     AdditionalUrls: Array.Empty<string>(),
     TargetUrl: "https://static.example.com/",
-    OutputFolder: "./out"
+    OutputFolder: "./out",
+    StringReplacements: new [] { new StringReplacements("umbraco-cms", "umbraco") }
 ));
 ```
 Deploy the ./out folder to any static host – done.
-

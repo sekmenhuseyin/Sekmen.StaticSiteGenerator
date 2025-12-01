@@ -107,13 +107,31 @@ public static class Functions
         HashSet<string> resources = [];
 
         // Extract from <link>, <script>, and <img> tags
-        foreach (HtmlNode link in doc.DocumentNode.SelectNodes("//link") ?? new HtmlNodeCollection(null!))
+        // Added detailed notifications for link tag processing (line 110 original reference)
+        int linkIndex = 0;
+        var linkNodes = doc.DocumentNode.SelectNodes("//link") ?? new HtmlNodeCollection(null!);
+        foreach (HtmlNode link in linkNodes)
         {
-            string href = link.GetAttributeValue("href", string.Empty);
-            if (!string.IsNullOrWhiteSpace(href) &&
-                (href.StartsWith('/') || href.StartsWith(baseUri.AbsoluteUri)) &&
-                !href.Equals(baseUri.AbsoluteUri))
-                resources.Add(href);
+            try
+            {
+                linkIndex++;
+                string href = link.GetAttributeValue("href", string.Empty);
+                if (!string.IsNullOrWhiteSpace(href) &&
+                    (href.StartsWith('/') || href.StartsWith(baseUri.AbsoluteUri)) &&
+                    !href.Equals(baseUri.AbsoluteUri))
+                {
+                    resources.Add(href);
+                    Console.WriteLine($"[Link {linkIndex}] Added resource: {href}");
+                }
+                else
+                {
+                    Console.WriteLine($"[Link {linkIndex}] Skipped: '{href}'");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[Link {linkIndex}] Error: {ex.Message}");
+            }
         }
 
         // Extract from <script> tags
