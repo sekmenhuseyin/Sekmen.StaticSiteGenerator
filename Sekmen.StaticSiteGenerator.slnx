@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/SolutionFolder/">
+    <File Path=".gitignore" />
+    <File Path="Directory.Packages.props" />
+    <File Path="Readme.md" />
+  </Folder>
+  <Project Path="Sekmen.StaticSiteGenerator/Sekmen.StaticSiteGenerator.csproj" />
+  <Project Path="Umbraco.Community.HtmlExporter/Umbraco.Community.HtmlExporter.csproj" />
+  <Project Path="UmbracoTestProject/UmbracoTestProject.csproj" />
+  <Project Path="WinTestApp/WinTestApp.csproj" />
+</Solution>
