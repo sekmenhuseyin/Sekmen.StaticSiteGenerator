@@ -6,7 +6,7 @@
 ![Dashboard Screenshot](Screenshot.png)
 
 ## Why
-Quickly host Umbraco content on cheap / global static hosting providers (GitHub Pages, Netlify, Cloudflare Pages, Azure Static Web Apps, S3 + CloudFront) for speed, cost and resilience, while continuing to author content in Umbraco.
+Quickly host Umbraco content on inexpensive / global static hosting providers (GitHub Pages, Netlify, Cloudflare Pages, Azure Static Web Apps, S3 + CloudFront) for speed, cost and resilience, while continuing to author content in Umbraco.
 
 ---
 ## Packages
@@ -39,7 +39,7 @@ Deploy the `./out` directory.
 ---
 ## Umbraco Plugin Overview
 After installing `Umbraco.Community.HtmlExporter` into your Umbraco project:
-- A dashboard appears (Content section) with controls for SiteUrl, Additional Urls, Target Url, and Output Folder.
+- A dashboard appears (Content section) with controls for SiteUrl, Additional Urls, Target Url and Output Folder.
 - Backend endpoints (secured):
   - `GET /umbracocommunityhtmlexporter/api/v1.0/get-data`
   - `POST /umbracocommunityhtmlexporter/api/v1.0/export-website`
@@ -48,8 +48,8 @@ After installing `Umbraco.Community.HtmlExporter` into your Umbraco project:
 ### Typical Workflow
 1. Editors publish content as normal.
 2. Editor opens the dashboard, sets target static domain + output folder path on the server (or mounted share / artifact folder).
-3. Click Export → Background HTTP calls crawl & write files.
-4. CI/CD or scheduled task syncs exported folder to static host.
+3. Click Export → Background HTTP calls crawl and write files.
+4. CI/CD or scheduled task syncs the exported folder to a static host.
 
 ---
 ## Installation
@@ -108,7 +108,7 @@ Roadmap ideas tracked inside the core package README.
 PRs welcome:
 1. Fork & branch
 2. Implement / test
-3. Update relevant README section(s)
+3. Update the relevant README section (s)
 4. Open PR with context (screenshots for UI changes)
 
 Please keep dependencies minimal and avoid introducing heavy frameworks.
